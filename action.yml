@@ -1,0 +1,6 @@
+name: "Discogs Container Actions"
+description: "Start Container actions"
+author: "Salvatore Gonda"
+runs:
+  using: "docker"
+  image: "Dockerfile"
