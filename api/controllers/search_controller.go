@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/SalvoSP9/discogs/api/repositories"
-	"github.com/SalvoSP9/discogs/api/responses"
+	"github.com/deemount/discogs/api/repositories"
+	"github.com/deemount/discogs/api/responses"
 )
 
 // GetSearchResult Controller

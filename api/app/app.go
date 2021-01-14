@@ -1,9 +1,10 @@
 package app
 
 import (
+	"github.com/gorilla/mux"
+
 	"github.com/deemount/discogs/api/config"
 	"github.com/deemount/discogs/api/config/driver"
-	"github.com/gorilla/mux"
 )
 
 // App ...
@@ -14,6 +15,7 @@ type App struct {
 
 	// pointer
 	API     *config.API
+	Discogs *config.Discogs
 	Options *config.Options
 	Swagger *config.Swagger
 

@@ -1,11 +1,10 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
 
-	"github.com/deemount/discogs/api/constants"
-	"github.com/deemount/discogs/api/middlewares"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
@@ -13,52 +12,22 @@ import (
 // assign server
 var server *Server
 
-// Route ...
-type Route struct {
-	Name        string
-	Method      string
-	Pattern     string
-	Secure      bool
-	HandlerFunc http.HandlerFunc
-}
-
-// Routes ...
-type Routes []Route
-
-var routes = Routes{
-	Route{
-		Name:        "Home",
-		Method:      "GET",
-		Pattern:     constants.HOMEURI,
-		HandlerFunc: server.Home,
-		Secure:      false,
-	},
-
-	Route{
-		Name:        "CheckData",
-		Method:      "GET",
-		Pattern:     constants.CHECKDATAURI,
-		HandlerFunc: server.CheckData,
-		Secure:      false,
-	},
-}
-
 // NewRouter ...
 func NewRouter() *mux.Router {
 
 	server.App.Router = mux.NewRouter().StrictSlash(true)
-	server.App.Router.NotFoundHandler = http.HandlerFunc(middlewares.NotFound)
-	server.App.Router.MethodNotAllowedHandler = http.HandlerFunc(middlewares.NotAllowed)
 
-	for _, route := range routes {
+	for _, route := range server.App.Routes {
 
 		var handler http.Handler
-		if route.Secure {
-			handler = middlewares.AuthMiddleware(route.HandlerFunc)
-		} else {
-			handler = route.HandlerFunc
-		}
 
+		// if route.Secure {
+		// 	handler = middlewares.AuthMiddleware(route.HandlerFunc)
+		// } else {
+		// 	handler = route.HandlerFunc
+		// }
+
+		handler = route.HandlerFunc
 		handler = handlers.LoggingHandler(os.Stderr, handler)
 
 		server.App.Router.
@@ -69,4 +38,18 @@ func NewRouter() *mux.Router {
 	}
 
 	return server.App.Router
+
+}
+
+// HealthCheck checks api health status
+func HealthCheck(w http.ResponseWriter, r *http.Request) {
+	type response struct {
+		Status string `json:"status,omitempty"`
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response{
+		Status: "up",
+	})
 }

@@ -4,10 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/SalvoSP9/discogs/api/constants"
-	"github.com/SalvoSP9/discogs/api/repositories"
-	"github.com/SalvoSP9/discogs/api/responses"
-	"github.com/SalvoSP9/discogs/api/utils"
+	"github.com/deemount/discogs/api/constants"
+	"github.com/deemount/discogs/api/repositories"
+	"github.com/deemount/discogs/api/responses"
+	"github.com/deemount/discogs/api/utils"
 )
 
 // GetMaster Controller

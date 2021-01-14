@@ -20,7 +20,7 @@ func (c *HTTPClient) Send(url string, params url.Values, headers map[string]stri
 
 	var err error
 
-	log.Print("send request uri: %v", url+"?"+params.Encode())
+	log.Printf("send request uri: %v", url+"?"+params.Encode())
 
 	// initialize request
 	req, err := http.NewRequest("GET", url+"?"+params.Encode(), nil)
