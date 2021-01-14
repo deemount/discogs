@@ -80,6 +80,16 @@ func Run() error {
 		},
 	}
 
+	server.App.Discogs = &config.Discogs{
+		URL:       os.Getenv("API_DISCOGS_URL"),
+		UserAgent: os.Getenv("API_DISCOGS_USERAGENT"),
+		Token:     os.Getenv("API_DISCOGS_TOKEN"),
+	}
+
+	server.App.Options = &config.Options{
+		Currency: os.Getenv("API_DISCOGS_CURRENCY"),
+	}
+
 	// initialize orm idle and router
 	if err = server.Initialize(); err != nil {
 		return err

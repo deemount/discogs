@@ -25,7 +25,9 @@ type Server struct {
 // @Summary init db connection and set router
 // @Description initialize database connection and set multiplexer router
 // @ID init-db-and-set-router
-func (server *Server) Initialize() {
+func (server *Server) Initialize() error {
+
+	var err error
 
 	db := driver.NewDataService(*server.App.DB.Config)
 	idle, err := db.Connect()
@@ -53,6 +55,8 @@ func (server *Server) Initialize() {
 	server.App.V2.Use(middlewares.JSON)
 
 	server.initializeRoutes()
+
+	return err
 
 }
 

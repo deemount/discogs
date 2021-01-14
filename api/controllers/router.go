@@ -42,7 +42,7 @@ func NewRouter() *mux.Router {
 }
 
 // HealthCheck checks api health status
-func HealthCheck(w http.ResponseWriter, r *http.Request) {
+func (server *Server) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	type response struct {
 		Status string `json:"status,omitempty"`
 	}
