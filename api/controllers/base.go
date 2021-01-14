@@ -38,9 +38,6 @@ func (server *Server) Initialize() {
 	// set new router instance
 	server.App.Router = mux.NewRouter()
 
-	// api health check
-	server.App.Router.HandleFunc(constants.HEALTHURI, healthCheck).Methods(http.MethodGet)
-
 	// build swagger ui
 	server.App.Router.PathPrefix(constants.SWAGGERURI).
 		Handler(
