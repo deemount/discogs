@@ -3,15 +3,12 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"os"
+	"time"
 
-	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	_ "github.com/jinzhu/gorm/dialects/postgres" // using postgres dialect
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"github.com/deemount/discogs/api/app"
-	"github.com/deemount/discogs/api/config/driver"
 	"github.com/deemount/discogs/api/constants"
 	"github.com/deemount/discogs/api/middlewares"
 )
@@ -29,13 +26,13 @@ func (server *Server) Initialize() error {
 
 	var err error
 
-	db := driver.NewDataService(*server.App.DB.Config)
-	idle, err := db.Connect()
-	if err != nil {
-		log.Printf("Could not open database connection: %v", err)
-	}
+	// db := driver.NewDataService(*server.App.DB.Config)
+	// idle, err := db.Connect()
+	// if err != nil {
+	// 	log.Printf("Could not open database connection: %v", err)
+	// }
 
-	log.Print(idle)
+	// log.Print(idle)
 
 	// set new router instance
 	server.App.Router = mux.NewRouter()
@@ -67,6 +64,16 @@ func (server *Server) Initialize() error {
 func (server *Server) Run() {
 
 	go log.Printf("Discogs API v%d is ready to listen and serve on port %s", server.App.API.Version, server.App.API.Port)
-	log.Fatal(http.ListenAndServe(":"+server.App.API.Port, handlers.LoggingHandler(os.Stdout, server.App.Router)))
+
+	srv := &http.Server{
+		Addr: ":" + server.App.API.Port,
+		//Handler:      tracing(nextRequestID)(logging(logger)(router)), //handlers.LoggingHandler(os.Stdout, server.App.Router)
+		//ErrorLog:     logger,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
+
+	log.Fatal(srv.ListenAndServe())
 
 }
