@@ -27,11 +27,22 @@ A RESTful API for Discogs v2 written in Go
 Using semantic versioning at the end, which is also tagged at github
 
 ```dockerfile
-docker build -t salvosp9/discogs:v0.1.1 .
+docker build -t deemount/discogs:v0.1.1 .
 ```
 
 ### Run
 
 ```dockerfile
-docker run --publish 8787:8787 --detach --name dcgs salvosp9/discogs:v0.1.1  
+docker run --publish 8787:8787 --detach --name dcgs deemount/discogs:v0.1.1  
 ```
+
+### History
+
+* create achitecture, add functoinalities, first setup
+
+### To Do
+
+* github tags
+* database connection
+* more functionality
+* more documentation

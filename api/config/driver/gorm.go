@@ -1,9 +1,10 @@
 package driver
 
 import (
-	"fmt"
-
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 
 	"github.com/deemount/discogs/api/config"
 	"github.com/deemount/discogs/api/models"
@@ -32,34 +33,37 @@ func (db *DataService) Connect() (*DataService, error) {
 
 	var err error
 
-	source := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s search_path=%s password=%s",
-		db.Config.Host, db.Config.Port, db.Config.User, db.Config.Name, db.Config.SSL, db.Config.Schema, db.Config.PW)
+	/*db.Config.Host, db.Config.Port, db.Config.User, db.Config.Name, db.Config.SSL, db.Config.Schema, db.Config.PW)*/
 
-	db.ORM, err = gorm.Open(db.Config.Driver, source)
+	db.ORM, err = gorm.Open(postgres.New(
+		postgres.Config{
+			DSN:                  "user=xxx password=xxx dbname=xxx port=5432 sslmode=disable TimeZone=Europe/Berlin",
+			PreferSimpleProtocol: true, // disables implicit prepared statement usage
+		}), db.config())
 
-	db.config()
 	db.migrate()
-
-	gorm.DefaultTableNameHandler = func(sql *gorm.DB, defaultTableName string) string {
-		return db.Config.TblPrefix + "_" + defaultTableName
-	}
 
 	return db, err
 
 }
 
-func (db *DataService) config() {
-
-	// Do not automatically convert to plural table names
-	db.ORM.SingularTable(db.Config.SingularTable)
-	db.ORM.LogMode(db.Config.LogMode)
-
+func (db *DataService) config() *gorm.Config {
+	return &gorm.Config{
+		// GORM defined log levels: Silent, Error, Warn, Info
+		Logger: logger.Default.LogMode(logger.Silent),
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   "acc_", // table name prefix
+			SingularTable: true,   // use singular table name
+		},
+	}
 }
 
 func (db *DataService) migrate() {
 
 	// Migrate missing fields
 	// It does not change/ delete types or values
-	db.ORM.Debug().AutoMigrate(&models.Artist{})
+	db.ORM.Debug().AutoMigrate(
+		&models.Artist{},
+	)
 
 }
