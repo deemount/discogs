@@ -39,8 +39,9 @@ docker run --publish 8787:8787 --detach --name dcgs deemount/discogs:v0.1.1
 ### History
 
 * create achitecture, add functoinalities, first setup
+* first upload & initial commit
 
-### To Do
+### To Do's
 
 * github tags
 * database connection
